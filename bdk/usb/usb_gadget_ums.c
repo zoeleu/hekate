@@ -1816,7 +1816,8 @@ int usb_device_gadget_ums(usb_ctxt_t *usbs)
 	usbd_gadget_ums_t ums = {0};
 
 	// Get USB Controller ops.
-	if (hw_get_chip_id() == GP_HIDREV_MAJOR_T210)
+	xusb_device_set_usb2(usbs->usb2);
+	if (usbs->usb2 && hw_get_chip_id() == GP_HIDREV_MAJOR_T210)
 		usb_device_get_ops(&usb_ops);
 	else
 	{

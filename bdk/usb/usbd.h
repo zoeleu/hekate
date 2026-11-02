@@ -119,6 +119,7 @@ typedef enum {
 	USB_REQUEST_SET_INTERFACE     = 11,
 	USB_REQUEST_SYNCH_FRAME       = 12,
 	USB_REQUEST_SET_SEL           = 13,
+	USB_REQUEST_SET_ISOCH_DELAY   = 49,
 
 	USB_REQUEST_GET_MS_DESCRIPTOR = 0x99,
 
@@ -133,6 +134,8 @@ typedef enum {
 	USB_FEATURE_ENDPOINT_HALT        = 0,
 	USB_FEATURE_DEVICE_REMOTE_WAKEUP = 1,
 	USB_FEATURE_TEST_MODE            = 2,
+	USB_FEATURE_U1_ENABLE            = 48,
+	USB_FEATURE_U2_ENABLE            = 49,
 } usb_get_status_req_t;
 
 typedef enum _usb_error_t
@@ -196,6 +199,7 @@ typedef struct _usb_ctxt_t
 	u32 offset;
 	u32 sectors;
 	u32 ro;
+	bool usb2;
 
 	// HID.
 	u32 idle;
@@ -208,6 +212,7 @@ typedef struct _usb_ctxt_t
 
 void usb_device_get_ops(usb_ops_t *ops);
 void xusb_device_get_ops(usb_ops_t *ops);
+void xusb_device_set_usb2(bool force);
 
 int  usb_device_gadget_ums(usb_ctxt_t *usbs);
 int  usb_device_gadget_hid(usb_ctxt_t *usbs);

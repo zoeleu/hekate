@@ -37,6 +37,24 @@ static usb_dev_descr_t usb_device_descriptor_ums =
 	.bNumConfigs     = 1
 };
 
+static usb_dev_descr_t usb_device_descriptor_ums_ss =
+{
+	.bLength         = 18,
+	.bDescriptorType = USB_DESCRIPTOR_DEVICE,
+	.bcdUSB          = 0x300,
+	.bDeviceClass    = 0x00,
+	.bDeviceSubClass = 0x00,
+	.bDeviceProtocol = 0x00,
+	.bMaxPacketSize  = 9,
+	.idVendor        = 0x11EC, // Nintendo: 0x057E, Nvidia: 0x0955
+	.idProduct       = 0xA7E0, // Switch:   0x2000, usbd:   0x3000
+	.bcdDevice       = 0x0101,
+	.iManufacturer   = 1,
+	.iProduct        = 2,
+	.iSerialNumber   = 3,
+	.bNumConfigs     = 1
+};
+
 static usb_dev_qual_descr_t usb_device_qualifier_descriptor =
 {
 	.bLength          = 10,
@@ -88,6 +106,19 @@ static usb_cfg_simple_descr_t usb_configuration_descriptor_ums =
 	.endpoint[1].bmAttributes     = USB_EP_TYPE_BULK,
 	.endpoint[1].wMaxPacketSize   = 0x200,
 	.endpoint[1].bInterval        = 0x00
+};
+
+static usb_cfg_ss_descr_t usb_configuration_descriptor_ums_ss =
+{
+	.config = { 9, USB_DESCRIPTOR_CONFIGURATION, sizeof(usb_cfg_ss_descr_t),
+		1, 1, 0, USB_ATTR_SELF_POWERED | USB_ATTR_BUS_POWERED_RSVD, 32 / 8 },
+	.interface = { 9, USB_DESCRIPTOR_INTERFACE, 0, 0, 2, 8, 6, 0x50, 0 },
+	.endpoint = {
+		{ { 7, USB_DESCRIPTOR_ENDPOINT, 0x81, USB_EP_TYPE_BULK, 1024, 0 },
+		  { 6, 0x30, 15, 0, 0 } },
+		{ { 7, USB_DESCRIPTOR_ENDPOINT, 0x01, USB_EP_TYPE_BULK, 1024, 0 },
+		  { 6, 0x30, 15, 0, 0 } }
+	}
 };
 
 static usb_cfg_simple_descr_t usb_other_speed_config_descriptor_ums =
@@ -153,6 +184,31 @@ static usb_dev_bot_t usb_device_binary_object_descriptor =
 	.bFunctionalitySupport  = 1,   // FS and above.
 	.bU1DevExitLat          = 0,
 	.wU2DevExitLat          = 0
+};
+
+static usb_dev_bot_t usb_device_binary_object_descriptor_ss =
+{
+	.bLength                = 5,
+	.bDescriptorType        = USB_DESCRIPTOR_DEVICE_BINARY_OBJECT,
+	.wTotalLength           = 22,
+	.bNumDeviceCaps         = 2,
+
+	/* Device Capability USB 2.0 Extension Descriptor */
+	.bLengthCap0            = 7,
+	.bDescriptorTypeCap0    = USB_DESCRIPTOR_DEVICE_BINARY_OBJECT_CAP,
+	.bDevCapabilityTypeCap0 = 2, // USB2.
+	.bmAttributesCap0       = 0,
+
+	/* Device Capability SuperSpeed Descriptor */
+	/* Gen1 SuperSpeed capability. */
+	.bLengthCap1            = 10,
+	.bDescriptorTypeCap1    = USB_DESCRIPTOR_DEVICE_BINARY_OBJECT_CAP,
+	.bDevCapabilityTypeCap1 = 3,   // USB3.
+	.bmAttributesCap1       = 0,
+	.wSpeedsSupported       = 0xe, // FS | HS | SS.
+	.bFunctionalitySupport  = 1,   // FS and above.
+	.bU1DevExitLat          = 10,
+	.wU2DevExitLat          = 0x7ff
 };
 
 static u8 usb_lang_id_string_descriptor[4] =
@@ -496,6 +552,9 @@ static usb_cfg_hid_descr_t usb_configuration_descriptor_hid_touch =
 usb_desc_t usb_gadget_ums_descriptors =
 {
 	.dev       = &usb_device_descriptor_ums,
+	.dev_ss    = &usb_device_descriptor_ums_ss,
+	.cfg_ss    = &usb_configuration_descriptor_ums_ss,
+	.bos_ss    = &usb_device_binary_object_descriptor_ss,
 	.dev_qual  = &usb_device_qualifier_descriptor,
 	.cfg       = &usb_configuration_descriptor_ums,
 	.cfg_other = &usb_other_speed_config_descriptor_ums,

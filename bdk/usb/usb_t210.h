@@ -294,3 +294,10 @@ typedef struct _t210_usb2d_t
 #define  PADCTL_USB2_VBUS_ID_OVR_MASK      (0xF << 18)
 
 #endif
+
+/* SuperSpeed device port power management. */
+#define XUSB_DEV_XHCI_PORTPM 0x4c
+#define XHCI_PORTPM_U1_TIMEOUT_MASK (0xff << 16)
+#define XHCI_PORTPM_U2_ENABLE BIT(29)
+#define XHCI_PORTHALT_STCHG_INTR_EN BIT(24)
+#define XHCI_PORTSC_CHANGE_MASK (XHCI_PORTSC_CSC | XHCI_PORTSC_WRC | XHCI_PORTSC_PRC | XHCI_PORTSC_PLC | XHCI_PORTSC_CEC)

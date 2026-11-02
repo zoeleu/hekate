@@ -219,6 +219,26 @@ typedef struct _usb_ms_ext_prop_descr_t
 	u16 wPropertyData[2];    // UTF16 LE
 } __attribute__((packed)) usb_ms_ext_prop_descr_t;
 
+/* USB 3.0 section 9.6.7: companion immediately follows its endpoint. */
+typedef struct _usb_ss_ep_comp_descr_t
+{
+	u8 bLength;
+	u8 bDescriptorType;
+	u8 bMaxBurst;
+	u8 bmAttributes;
+	u16 wBytesPerInterval;
+} __attribute__((packed)) usb_ss_ep_comp_descr_t;
+
+typedef struct _usb_cfg_ss_descr_t
+{
+	usb_cfg_descr_t config;
+	usb_inter_descr_t interface;
+	struct {
+		usb_ep_descr_t descriptor;
+		usb_ss_ep_comp_descr_t companion;
+	} __attribute__((packed)) endpoint[2];
+} __attribute__((packed)) usb_cfg_ss_descr_t;
+
 typedef struct _usb_desc_t
 {
 	usb_dev_descr_t *dev;
@@ -226,6 +246,9 @@ typedef struct _usb_desc_t
 	usb_cfg_simple_descr_t *cfg;
 	usb_cfg_simple_descr_t *cfg_other;
 	usb_dev_bot_t *dev_bot;
+	usb_dev_descr_t *dev_ss;
+	usb_cfg_ss_descr_t *cfg_ss;
+	usb_dev_bot_t *bos_ss;
 	u8 *vendor;
 	u8 *product;
 	u8 *serial;
